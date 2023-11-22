@@ -23,6 +23,7 @@
     "@nestjs/common": "^10.0.0",
     "@nestjs/core": "^10.0.0",
     "@nestjs/platform-express": "^10.0.0",
+    "axios": "^1.6.2",
     "nestjs-api-keys": "^1.1.0",
     "node-html-parser": "^6.1.11",
     "reflect-metadata": "^0.1.13",

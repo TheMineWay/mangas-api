@@ -3,7 +3,7 @@ import { IScrappingClient } from '../scrapping-client.interface';
 import { ManganeloClient } from './manganelo/manganelo.client';
 import { InternalServerErrorException } from '@nestjs/common';
 
-export class MangaServerClient implements IScrappingClient {
+export class MangaServerClient {
   private constructor(private readonly scrappingClient: IScrappingClient) {}
 
   public static fromServerCode(server: MangaServer) {
