@@ -7,6 +7,7 @@ export interface MangaInfo {
   synopsis: string;
   status: MangaStatus;
   categories: string[];
+  language: string; // <- Language code
 
   // Written
   authors: string[];
