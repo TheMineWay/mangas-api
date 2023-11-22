@@ -1,0 +1,16 @@
+version: '3'
+name: mangas-api
+services:
+  api:
+    container_name: mangas-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    ports:
+      - '${PORT}:3000'
+    volumes:
+      - ./src:/app/src
+    expose:
+      - '${PORT}'
