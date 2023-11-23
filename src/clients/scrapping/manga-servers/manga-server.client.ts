@@ -1,4 +1,4 @@
-import { MangaServer } from 'src/types/manga/servers/manga-server.enum';
+import { MangaServer } from '../../../types/manga/servers/manga-server.enum';
 import { IScrappingClient } from '../scrapping-client.interface';
 import { ManganeloClient } from './manganelo/manganelo.client';
 import { InternalServerErrorException } from '@nestjs/common';
