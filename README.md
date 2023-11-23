@@ -1,5 +1,4 @@
 [![Node.js CI](https://github.com/TheMineWay/mangas-api/actions/workflows/tests.yml/badge.svg)](https://github.com/TheMineWay/mangas-api/actions/workflows/tests.yml)
-[![njsscan sarif](https://github.com/TheMineWay/mangas-api/actions/workflows/njsscan.yml/badge.svg)](https://github.com/TheMineWay/mangas-api/actions/workflows/njsscan.yml)
 
 # Mangas API
 
