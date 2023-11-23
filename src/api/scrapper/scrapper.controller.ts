@@ -2,7 +2,9 @@ import { Controller, Get, Param, Query } from '@nestjs/common';
 import { MangaServer } from 'src/types/manga/servers/manga-server.enum';
 import { ScrapperService } from './scrapper.service';
 import { MangaExploreFiltersDTO } from 'src/dtos/manga/explore/manga-explore-filters.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Scrapper')
 @Controller('scrapper/:server')
 export class ScrapperController {
   constructor(private readonly scrapperService: ScrapperService) {}
