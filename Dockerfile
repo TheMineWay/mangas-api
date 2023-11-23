@@ -17,6 +17,5 @@ COPY . .
 # Build image
 RUN npm run build
 
-# MIGHT CHANGE DEPENDING ON .ENV CONFIG
 EXPOSE $PORT
 CMD [ "node", "dist/main.js" ]
