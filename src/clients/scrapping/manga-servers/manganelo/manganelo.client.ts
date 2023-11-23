@@ -30,6 +30,20 @@ export class ManganeloClient implements IScrappingClient {
       label.includes('Status'),
     ).valueNode.text;
 
+    const chapters = content
+      .querySelectorAll(
+        'div.panel-story-chapter-list > ul#row-content-chapter > li',
+      )
+      .map((node) => {
+        const aNode = node.querySelector('a.chapter-name');
+        const aSplitHref = aNode.attributes['href'].split('/');
+        return {
+          name: aNode.text,
+          code: aSplitHref[aSplitHref.length - 1],
+          number: +node.attributes['id'].split('-')[1],
+        };
+      });
+
     return {
       code: mangaCode,
       name: infoContainer.querySelector('div.story-info-right > h1').text,
@@ -47,8 +61,7 @@ export class ManganeloClient implements IScrappingClient {
       synopsis: infoContainer.querySelector(
         'div.panel-story-info-description#panel-story-info-description',
       ).text,
-      lastUpdate: new Date(),
-      chapters: [],
+      chapters,
     } satisfies MangaInfo;
   }
   getChapterContentByMangaCodeAndChapterCode(

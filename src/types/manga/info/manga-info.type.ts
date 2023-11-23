@@ -11,7 +11,6 @@ export interface MangaInfo {
 
   // Written
   authors: string[];
-  lastUpdate: Date;
 
   // Chapters
   chapters: MangaChapterInfo[];
