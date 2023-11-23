@@ -1,6 +1,8 @@
 import { Controller, Get } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiSecurity, ApiTags } from '@nestjs/swagger';
+import { SWAGGER_API_KEY_NAME } from 'src/constants/open-api/swagger.constants';
 
+@ApiSecurity(SWAGGER_API_KEY_NAME)
 @ApiTags('Information')
 @Controller('info')
 export class InfoController {
