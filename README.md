@@ -1,3 +1,6 @@
+[![Node.js CI](https://github.com/TheMineWay/mangas-api/actions/workflows/tests.yml/badge.svg)](https://github.com/TheMineWay/mangas-api/actions/workflows/tests.yml)
+[![njsscan sarif](https://github.com/TheMineWay/mangas-api/actions/workflows/njsscan.yml/badge.svg)](https://github.com/TheMineWay/mangas-api/actions/workflows/njsscan.yml)
+
 # Mangas API
 
 An Open Source API that provides a standard way to query for mangas from different manga readers.
