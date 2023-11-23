@@ -4,6 +4,7 @@ import axios from 'axios';
 import HTMLParser from 'node-html-parser';
 import { MangaStatus } from 'src/types/manga/info/manga-status.enum';
 import { MangaInfo } from 'src/types/manga/info/manga-info.type';
+import { StreamableFile } from '@nestjs/common';
 
 export class ManganeloClient implements IScrappingClient {
   private readonly baseUrl = 'https://chapmanganelo.com';
@@ -78,8 +79,22 @@ export class ManganeloClient implements IScrappingClient {
         .map((node) => node.attributes['src']),
     };
   }
-  getChapterImageByUrl(url: string): Promise<never> {
-    throw new Error('Method not implemented.');
+  async getImageByUrl(url: string) {
+    try {
+      const image = await axios.get(url, {
+        responseType: 'stream',
+        headers: {
+          Accept: 'image/avif,image/webp,*/*',
+          'Accept-Encoding': 'gzip, deflate, br',
+          DNT: 1,
+          Referer: 'https://chapmanganelo.com/',
+        },
+      });
+      return new StreamableFile(image.data);
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
   }
 
   async getPageContent(url: string) {

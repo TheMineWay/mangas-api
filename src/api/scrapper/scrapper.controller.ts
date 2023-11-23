@@ -26,4 +26,12 @@ export class ScrapperController {
       chapterCode,
     );
   }
+
+  @Get('image/url/:imageUrl')
+  async getImageByUrl(
+    @Param('server') server: MangaServer,
+    @Param('imageUrl') imageUrl: string,
+  ) {
+    return await this.scrapperService.getImageByUrl(server, imageUrl);
+  }
 }

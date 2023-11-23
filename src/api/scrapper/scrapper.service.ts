@@ -19,4 +19,10 @@ export class ScrapperService {
       server,
     ).getChapterContentByMangaCodeAndChapterCode(mangaCode, chapterCode);
   }
+
+  async getImageByUrl(server: MangaServer, imageUrl: string) {
+    return await MangaServerClient.fromServerCode(server).getImageByUrl(
+      imageUrl,
+    );
+  }
 }
