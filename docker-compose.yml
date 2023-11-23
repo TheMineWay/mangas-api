@@ -1,7 +1,7 @@
 version: '3'
 name: mangas-api
 services:
-  api:
+  server:
     container_name: mangas-api
     build:
       context: .
@@ -9,7 +9,7 @@ services:
     env_file:
       - .env
     ports:
-      - '${PORT}:3000'
+      - '${PORT}:${PORT}'
     volumes:
       - ./src:/app/src
     expose:

@@ -10,15 +10,18 @@ export const getEnv = (): EnvFile => {
   return {
     apiKeys: JSON.parse(env.API_KEYS),
     openApiDocs: getBooleanFromString(env.OPEN_API_DOCS, false),
+    port: +env.PORT,
   };
 };
 
 interface EnvFile {
   apiKeys: string[];
   openApiDocs: boolean;
+  port: number;
 }
 
 class RawEnvFile {
   API_KEYS: string;
   OPEN_API_DOCS?: string;
+  PORT: string;
 }

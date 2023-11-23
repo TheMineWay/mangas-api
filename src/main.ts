@@ -6,7 +6,7 @@ import { getEnv } from './utils/config/get-env';
 import { SWAGGER_API_KEY_NAME } from './constants/open-api/swagger.constants';
 
 async function bootstrap() {
-  const { openApiDocs } = getEnv();
+  const { openApiDocs, port } = getEnv();
 
   const app = await NestFactory.create(AppModule);
 
@@ -27,6 +27,6 @@ async function bootstrap() {
     SwaggerModule.setup('documentation', app, document);
   }
 
-  await app.listen(3000);
+  await app.listen(port);
 }
 bootstrap();
