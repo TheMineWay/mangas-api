@@ -106,13 +106,18 @@ export class ManganeloClient implements IScrappingClient {
     filters: MangaExploreFiltersDTO,
   ): Promise<MangaExploreInfo> {
     const content = await this.getPageContent(
-      `https://m.manganelo.com/search/story/${filters.name}?page=${
-        filters.page ?? 1
-      }`,
+      `https://m.manganelo.com/search/story/${filters.name.replaceAll(
+        ' ',
+        '_',
+      )}?page=${filters.page ?? 1}`,
     );
 
     const resultNodes = content.querySelectorAll(
       'div.panel-search-story > div',
+    );
+
+    const countNode = content.querySelector(
+      'div.panel-page-number > div.group-qty > a',
     );
 
     return {
@@ -128,9 +133,7 @@ export class ManganeloClient implements IScrappingClient {
           code: mangaPageLink[mangaPageLink.length - 1].substring(6),
         };
       }),
-      count: +content
-        .querySelector('div.panel-page-number > div.group-qty > a')
-        .text.split(' : ')[1],
+      count: countNode ? +countNode.text.split(' : ')[1] : resultNodes.length,
     };
   }
 
