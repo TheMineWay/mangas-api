@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
-import { ApiKeysModule } from 'nestjs-api-keys';
+import { ApiKeyGuard, ApiKeysModule } from 'nestjs-api-keys';
 import { getEnv } from './utils/config/get-env';
 import { ApiPermissions } from './constants/permissions/api-permissions.enum';
 import { ApiModule } from './api/api.module';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -20,6 +21,11 @@ import { ApiModule } from './api/api.module';
     }),
     ApiModule,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ApiKeyGuard({ permissions: [ApiPermissions.USE] }),
+    },
+  ],
 })
 export class AppModule {}
