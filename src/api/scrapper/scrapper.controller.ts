@@ -1,6 +1,7 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { MangaServer } from 'src/types/manga/servers/manga-server.enum';
 import { ScrapperService } from './scrapper.service';
+import { MangaExploreFiltersDTO } from 'src/dtos/manga/explore/manga-explore-filters.dto';
 
 @Controller('scrapper/:server')
 export class ScrapperController {
@@ -33,5 +34,13 @@ export class ScrapperController {
     @Param('imageUrl') imageUrl: string,
   ) {
     return await this.scrapperService.getImageByUrl(server, imageUrl);
+  }
+
+  @Get('explore')
+  async exploreCatalog(
+    @Param('server') server: MangaServer,
+    @Query() filters: MangaExploreFiltersDTO,
+  ) {
+    return await this.scrapperService.exploreCatalog(server, filters);
   }
 }

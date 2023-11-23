@@ -5,13 +5,16 @@ import HTMLParser from 'node-html-parser';
 import { MangaStatus } from 'src/types/manga/info/manga-status.enum';
 import { MangaInfo } from 'src/types/manga/info/manga-info.type';
 import { StreamableFile } from '@nestjs/common';
+import { MangaExploreInfo } from 'src/types/manga/explore/manga-explore-info.type';
+import { MangaExploreFiltersDTO } from 'src/dtos/manga/explore/manga-explore-filters.dto';
 
 export class ManganeloClient implements IScrappingClient {
-  private readonly baseUrl = 'https://chapmanganelo.com';
+  private readonly BASE_URL = 'https://chapmanganelo.com';
+  private readonly EXPLORE_MANGAS_PER_PAGE = 20;
 
   async getMangaInfoByCode(mangaCode: string) {
     const content = await this.getPageContent(
-      `${this.baseUrl}/manga-${mangaCode}`,
+      `${this.BASE_URL}/manga-${mangaCode}`,
     );
 
     const infoContainer = content.querySelector(
@@ -59,6 +62,8 @@ export class ManganeloClient implements IScrappingClient {
         .find(({ label }) => label.includes('Genres'))
         .valueNode.querySelectorAll('a')
         .map(({ text }) => text),
+      coverUrl: infoContainer.querySelector('span.info-image > img.img-loading')
+        .attributes['src'],
       synopsis: infoContainer.querySelector(
         'div.panel-story-info-description#panel-story-info-description',
       ).text,
@@ -70,7 +75,7 @@ export class ManganeloClient implements IScrappingClient {
     chapterCode: string,
   ): Promise<MangaChapter> {
     const content = await this.getPageContent(
-      `${this.baseUrl}/manga-${mangaCode}/${chapterCode}`,
+      `${this.BASE_URL}/manga-${mangaCode}/${chapterCode}`,
     );
 
     return {
@@ -97,12 +102,43 @@ export class ManganeloClient implements IScrappingClient {
     }
   }
 
+  async exploreCatalog(
+    filters: MangaExploreFiltersDTO,
+  ): Promise<MangaExploreInfo> {
+    const content = await this.getPageContent(
+      `https://m.manganelo.com/search/story/${filters.name}?page=${
+        filters.page ?? 1
+      }`,
+    );
+
+    const resultNodes = content.querySelectorAll(
+      'div.panel-search-story > div',
+    );
+
+    return {
+      books: resultNodes.map((node) => {
+        const rNode = node.querySelector('div.item-right');
+        const aLink = node.querySelector('a.item-img');
+
+        const mangaPageLink = aLink.attributes['href'].split('/');
+
+        return {
+          name: rNode.querySelector('h3 > a').text,
+          coverUrl: aLink.querySelector('img').attributes['src'],
+          code: mangaPageLink[mangaPageLink.length - 1].substring(6),
+        };
+      }),
+      count: +content
+        .querySelector('div.panel-page-number > div.group-qty > a')
+        .text.split(' : ')[1],
+    };
+  }
+
   async getPageContent(url: string) {
     const data = await axios.get<string>(url, {
       headers: {
-        referer: 'https://m.manganelo.com/',
+        referer: url,
         DNT: 1,
-        Host: 'chapmanganelo.com',
       },
     });
 

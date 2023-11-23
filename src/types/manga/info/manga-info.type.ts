@@ -8,6 +8,7 @@ export interface MangaInfo {
   status: MangaStatus;
   categories: string[];
   language: string; // <- Language code
+  coverUrl: string;
 
   // Written
   authors: string[];
