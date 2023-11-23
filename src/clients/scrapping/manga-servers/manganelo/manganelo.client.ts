@@ -1,12 +1,12 @@
-import { MangaChapter } from 'src/types/manga/chapter/manga-chapter.type';
+import { MangaChapter } from '../../../../types/manga/chapter/manga-chapter.type';
 import { IScrappingClient } from '../../scrapping-client.interface';
 import axios from 'axios';
 import HTMLParser from 'node-html-parser';
-import { MangaStatus } from 'src/types/manga/info/manga-status.enum';
-import { MangaInfo } from 'src/types/manga/info/manga-info.type';
+import { MangaStatus } from '../../../../types/manga/info/manga-status.enum';
+import { MangaInfo } from '../../../../types/manga/info/manga-info.type';
 import { StreamableFile } from '@nestjs/common';
-import { MangaExploreInfo } from 'src/types/manga/explore/manga-explore-info.type';
-import { MangaExploreFiltersDTO } from 'src/dtos/manga/explore/manga-explore-filters.dto';
+import { MangaExploreInfo } from '../../../../types/manga/explore/manga-explore-info.type';
+import { MangaExploreFiltersDTO } from '../../../../dtos/manga/explore/manga-explore-filters.dto';
 
 export class ManganeloClient implements IScrappingClient {
   private readonly BASE_URL = 'https://chapmanganelo.com';
