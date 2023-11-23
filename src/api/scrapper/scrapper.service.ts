@@ -9,4 +9,14 @@ export class ScrapperService {
       mangaCode,
     );
   }
+
+  async getChapterContent(
+    server: MangaServer,
+    mangaCode: string,
+    chapterCode: string,
+  ) {
+    return await MangaServerClient.fromServerCode(
+      server,
+    ).getChapterContentByMangaCodeAndChapterCode(mangaCode, chapterCode);
+  }
 }

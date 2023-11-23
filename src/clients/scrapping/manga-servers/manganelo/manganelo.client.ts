@@ -6,7 +6,7 @@ import { MangaStatus } from 'src/types/manga/info/manga-status.enum';
 import { MangaInfo } from 'src/types/manga/info/manga-info.type';
 
 export class ManganeloClient implements IScrappingClient {
-  private readonly baseUrl = 'https://chapmanganelo.com/';
+  private readonly baseUrl = 'https://chapmanganelo.com';
 
   async getMangaInfoByCode(mangaCode: string) {
     const content = await this.getPageContent(
@@ -64,11 +64,19 @@ export class ManganeloClient implements IScrappingClient {
       chapters,
     } satisfies MangaInfo;
   }
-  getChapterContentByMangaCodeAndChapterCode(
+  async getChapterContentByMangaCodeAndChapterCode(
     mangaCode: string,
     chapterCode: string,
   ): Promise<MangaChapter> {
-    throw new Error('Method not implemented.');
+    const content = await this.getPageContent(
+      `${this.baseUrl}/manga-${mangaCode}/${chapterCode}`,
+    );
+
+    return {
+      images: content
+        .querySelectorAll('div.container-chapter-reader > img')
+        .map((node) => node.attributes['src']),
+    };
   }
   getChapterImageByUrl(url: string): Promise<never> {
     throw new Error('Method not implemented.');

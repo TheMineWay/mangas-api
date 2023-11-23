@@ -6,11 +6,24 @@ import { ScrapperService } from './scrapper.service';
 export class ScrapperController {
   constructor(private readonly scrapperService: ScrapperService) {}
 
-  @Get('info/:mangaCode')
+  @Get('manga/:mangaCode/info')
   async getMangaInfo(
     @Param('server') server: MangaServer,
     @Param('mangaCode') mangaCode: string,
   ) {
     return await this.scrapperService.getMangaInfoByCode(server, mangaCode);
+  }
+
+  @Get('manga/:mangaCode/chapter/:chapterCode/content')
+  async getChapterContent(
+    @Param('server') server: MangaServer,
+    @Param('mangaCode') mangaCode: string,
+    @Param('chapterCode') chapterCode: string,
+  ) {
+    return await this.scrapperService.getChapterContent(
+      server,
+      mangaCode,
+      chapterCode,
+    );
   }
 }
