@@ -13,6 +13,9 @@ async function bootstrap() {
   // Global validation
   app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
 
+  // Headers security
+  app.use(helmet());
+
   if (openApiDocs) {
     const config = new DocumentBuilder()
       .setTitle('Mangas API')
@@ -30,3 +33,6 @@ async function bootstrap() {
   await app.listen(port);
 }
 bootstrap();
+function helmet(): any {
+  throw new Error('Function not implemented.');
+}
