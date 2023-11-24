@@ -7,6 +7,7 @@ import { MangaInfo } from '../../../../types/manga/info/manga-info.type';
 import { StreamableFile } from '@nestjs/common';
 import { MangaExploreInfo } from '../../../../types/manga/explore/manga-explore-info.type';
 import { MangaExploreFiltersDTO } from '../../../../dtos/manga/explore/manga-explore-filters.dto';
+import { Language } from 'src/types/languages/language.enum';
 
 export class ManganeloClient implements IScrappingClient {
   private readonly BASE_URL = 'https://chapmanganelo.com';
@@ -51,7 +52,7 @@ export class ManganeloClient implements IScrappingClient {
     return {
       code: mangaCode,
       name: infoContainer.querySelector('div.story-info-right > h1').text,
-      language: 'en_US',
+      language: Language.en_US,
       authors: processedInfoTable
         .find(({ label }) => label.includes('Author'))
         ?.valueNode.querySelectorAll('a')
