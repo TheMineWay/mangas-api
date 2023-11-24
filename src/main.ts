@@ -4,6 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { getEnv } from './utils/config/get-env';
 import { SWAGGER_API_KEY_NAME } from './constants/open-api/swagger.constants';
+import helmet from 'helmet';
 
 async function bootstrap() {
   const { openApiDocs, port } = getEnv();
@@ -12,6 +13,9 @@ async function bootstrap() {
 
   // Global validation
   app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
+
+  // Headers security
+  app.use(helmet());
 
   if (openApiDocs) {
     const config = new DocumentBuilder()

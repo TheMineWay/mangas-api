@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   IsNotEmpty,
@@ -8,12 +9,14 @@ import {
 } from 'class-validator';
 
 export class MangaExploreFiltersDTO {
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   @MaxLength(64)
   name: string;
 
   // Pagination
+  @ApiProperty()
   @IsOptional()
   @IsNumber()
   @Type(() => Number)
