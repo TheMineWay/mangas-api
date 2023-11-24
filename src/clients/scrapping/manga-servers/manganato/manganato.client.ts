@@ -9,8 +9,8 @@ import { MangaExploreInfo } from '../../../../types/manga/explore/manga-explore-
 import { MangaExploreFiltersDTO } from '../../../../dtos/manga/explore/manga-explore-filters.dto';
 import { Language } from 'src/types/languages/language.enum';
 
-export class ManganeloClient implements IScrappingClient {
-  private readonly BASE_URL = 'https://chapmanganelo.com';
+export class ManganatoClient implements IScrappingClient {
+  private readonly BASE_URL = 'https://chapmanganato.com';
 
   async getMangaInfoByCode(mangaCode: string) {
     const content = await this.getPageContent(
@@ -92,7 +92,7 @@ export class ManganeloClient implements IScrappingClient {
           Accept: 'image/avif,image/webp,*/*',
           'Accept-Encoding': 'gzip, deflate, br',
           DNT: 1,
-          Referer: 'https://chapmanganelo.com/',
+          Referer: 'https://chapmanganato.com/',
         },
       });
       return new StreamableFile(image.data);
