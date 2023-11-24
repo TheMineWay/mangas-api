@@ -4,6 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { getEnv } from './utils/config/get-env';
 import { SWAGGER_API_KEY_NAME } from './constants/open-api/swagger.constants';
+import helmet from 'helmet';
 
 async function bootstrap() {
   const { openApiDocs, port } = getEnv();
@@ -33,6 +34,3 @@ async function bootstrap() {
   await app.listen(port);
 }
 bootstrap();
-function helmet(): any {
-  throw new Error('Function not implemented.');
-}
