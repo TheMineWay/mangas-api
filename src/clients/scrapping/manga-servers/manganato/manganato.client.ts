@@ -7,7 +7,7 @@ import { MangaInfo } from '../../../../types/manga/info/manga-info.type';
 import { StreamableFile } from '@nestjs/common';
 import { MangaExploreInfo } from '../../../../types/manga/explore/manga-explore-info.type';
 import { MangaExploreFiltersDTO } from '../../../../dtos/manga/explore/manga-explore-filters.dto';
-import { Language } from 'src/types/languages/language.enum';
+import { Language } from '../../../../types/languages/language.enum';
 
 export class ManganatoClient implements IScrappingClient {
   private readonly BASE_URL = 'https://chapmanganato.com';
