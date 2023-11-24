@@ -16,6 +16,11 @@ export class InfoController {
         languages: [Language.en_US],
         homepage: 'https://m.manganelo.com/wwww',
       },
+      {
+        code: MangaServer.MANGANATO,
+        languages: [Language.en_US],
+        homepage: 'https://manganato.com/',
+      },
     ];
   }
 }
