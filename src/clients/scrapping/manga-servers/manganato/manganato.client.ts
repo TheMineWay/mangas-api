@@ -36,15 +36,17 @@ export class ManganatoClient implements IScrappingClient {
 
     const chapters = content
       .querySelectorAll(
-        'div.panel-story-chapter-list > ul#row-content-chapter > li',
+        'div.panel-story-chapter-list > ul.row-content-chapter > li',
       )
-      .map((node) => {
+      .reverse()
+      .map((node, i) => {
         const aNode = node.querySelector('a.chapter-name');
         const aSplitHref = aNode.attributes['href'].split('/');
+
         return {
           name: aNode.text,
           code: aSplitHref[aSplitHref.length - 1],
-          number: +node.attributes['id'].split('-')[1],
+          number: i + 1,
         };
       });
 
@@ -106,7 +108,7 @@ export class ManganatoClient implements IScrappingClient {
     filters: MangaExploreFiltersDTO,
   ): Promise<MangaExploreInfo> {
     const content = await this.getPageContent(
-      `https://m.manganelo.com/search/story/${filters.name.replaceAll(
+      `https://manganato.com/search/story/${filters.name.replaceAll(
         ' ',
         '_',
       )}?page=${filters.page ?? 1}`,
