@@ -9,8 +9,8 @@ import { MangaExploreInfo } from '../../../../types/manga/explore/manga-explore-
 import { MangaExploreFiltersDTO } from '../../../../dtos/manga/explore/manga-explore-filters.dto';
 import { Language } from '../../../../types/languages/language.enum';
 
-export class ManganeloClient implements IScrappingClient {
-  private readonly BASE_URL = 'https://chapmanganelo.com';
+export class ManganatoClient implements IScrappingClient {
+  private readonly BASE_URL = 'https://chapmanganato.com';
 
   async getMangaInfoByCode(mangaCode: string) {
     const content = await this.getPageContent(
@@ -36,15 +36,17 @@ export class ManganeloClient implements IScrappingClient {
 
     const chapters = content
       .querySelectorAll(
-        'div.panel-story-chapter-list > ul#row-content-chapter > li',
+        'div.panel-story-chapter-list > ul.row-content-chapter > li',
       )
-      .map((node) => {
+      .reverse()
+      .map((node, i) => {
         const aNode = node.querySelector('a.chapter-name');
         const aSplitHref = aNode.attributes['href'].split('/');
+
         return {
           name: aNode.text,
           code: aSplitHref[aSplitHref.length - 1],
-          number: +node.attributes['id'].split('-')[1],
+          number: i + 1,
         };
       });
 
@@ -92,7 +94,7 @@ export class ManganeloClient implements IScrappingClient {
           Accept: 'image/avif,image/webp,*/*',
           'Accept-Encoding': 'gzip, deflate, br',
           DNT: 1,
-          Referer: 'https://chapmanganelo.com/',
+          Referer: 'https://chapmanganato.com/',
         },
       });
       return new StreamableFile(image.data);
@@ -106,7 +108,7 @@ export class ManganeloClient implements IScrappingClient {
     filters: MangaExploreFiltersDTO,
   ): Promise<MangaExploreInfo> {
     const content = await this.getPageContent(
-      `https://m.manganelo.com/search/story/${filters.name.replaceAll(
+      `https://manganato.com/search/story/${filters.name.replaceAll(
         ' ',
         '_',
       )}?page=${filters.page ?? 1}`,

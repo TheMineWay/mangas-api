@@ -1,5 +1,6 @@
 import { MangaServer } from '../../../types/manga/servers/manga-server.enum';
 import { IScrappingClient } from '../scrapping-client.interface';
+import { ManganatoClient } from './manganato/manganato.client';
 import { ManganeloClient } from './manganelo/manganelo.client';
 import { InternalServerErrorException } from '@nestjs/common';
 
@@ -10,6 +11,8 @@ export class MangaServerClient {
     switch (server) {
       case MangaServer.MANGANELO:
         return new ManganeloClient();
+      case MangaServer.MANGANATO:
+        return new ManganatoClient();
     }
     throw new InternalServerErrorException();
   }
