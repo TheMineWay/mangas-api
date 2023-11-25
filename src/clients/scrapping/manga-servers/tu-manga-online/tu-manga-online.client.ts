@@ -14,25 +14,14 @@ export class TuMangaOnlineClient implements IScrappingClient {
 
   async getMangaInfoByCode(mangaCode: string) {
     const content = await this.getPageContent(
-      `${this.BASE_URL}/manga-${mangaCode}`,
+      `${this.BASE_URL}/library/manga/${mangaCode}`,
     );
 
     const infoContainer = content.querySelector(
-      'div.container.container-main > div.container-main-left > div.panel-story-info',
+      'section.element > header > section.element-header-content > div.container > div.row',
     );
 
-    const infoTable = infoContainer.querySelectorAll(
-      'table.variations-tableInfo > tbody > tr',
-    );
-
-    const processedInfoTable = infoTable.map((row) => ({
-      label: row.querySelector('td.table-label').childNodes[1].text,
-      valueNode: row.querySelector('td.table-value'),
-    }));
-
-    const rawStatus = processedInfoTable.find(({ label }) =>
-      label.includes('Status'),
-    ).valueNode.text;
+    const rawStatus = infoContainer.querySelector('span.book-status').text;
 
     const chapters = content
       .querySelectorAll(
@@ -52,23 +41,23 @@ export class TuMangaOnlineClient implements IScrappingClient {
 
     return {
       code: mangaCode,
-      name: infoContainer.querySelector('div.story-info-right > h1').text,
-      language: Language.en_US,
-      authors: processedInfoTable
-        .find(({ label }) => label.includes('Author'))
-        ?.valueNode.querySelectorAll('a')
-        .map(({ text }) => text),
+      name: infoContainer
+        .querySelector(
+          'div.element-header-content-text > h1.element-title.my-2',
+        )
+        .firstChild.text.trim(),
+      language: Language.es_ES,
+      authors: [],
       status:
-        rawStatus === 'Completed' ? MangaStatus.COMPLETED : MangaStatus.ONGOING,
-      categories: processedInfoTable
-        .find(({ label }) => label.includes('Genres'))
-        .valueNode.querySelectorAll('a')
+        rawStatus === 'Finalizado'
+          ? MangaStatus.COMPLETED
+          : MangaStatus.ONGOING,
+      categories: infoContainer
+        .querySelectorAll('h6 > a.badge badge-primary')
         .map(({ text }) => text),
-      coverUrl: infoContainer.querySelector('span.info-image > img.img-loading')
+      coverUrl: infoContainer.querySelector('div > img.book-thumbnail')
         .attributes['src'],
-      synopsis: infoContainer.querySelector(
-        'div.panel-story-info-description#panel-story-info-description',
-      ).text,
+      synopsis: infoContainer.querySelector('div > p.element-description').text,
       chapters,
     } satisfies MangaInfo;
   }
