@@ -3,6 +3,7 @@ import { IScrappingClient } from '../scrapping-client.interface';
 import { ManganatoClient } from './manganato/manganato.client';
 import { ManganeloClient } from './manganelo/manganelo.client';
 import { InternalServerErrorException } from '@nestjs/common';
+import { TuMangaOnlineClient } from './tu-manga-online/tu-manga-online.client';
 
 export class MangaServerClient {
   private constructor(private readonly scrappingClient: IScrappingClient) {}
@@ -13,6 +14,8 @@ export class MangaServerClient {
         return new ManganeloClient();
       case MangaServer.MANGANATO:
         return new ManganatoClient();
+      case MangaServer.TU_MANGA_ONLINE:
+        return new TuMangaOnlineClient();
     }
     throw new InternalServerErrorException();
   }
