@@ -53,7 +53,7 @@ export class TuMangaOnlineClient implements IScrappingClient {
           ? MangaStatus.COMPLETED
           : MangaStatus.ONGOING,
       categories: infoContainer
-        .querySelectorAll('h6 > a.badge badge-primary')
+        .querySelectorAll('h6 > a.badge.badge-primary')
         .map(({ text }) => text),
       coverUrl: infoContainer.querySelector('div > img.book-thumbnail')
         .attributes['src'],
