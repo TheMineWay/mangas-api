@@ -124,7 +124,7 @@ export class TuMangaOnlineClient implements IScrappingClient {
 
         return {
           name: thumbNode.querySelector('div.thumbnail-title > h4').text,
-          coverUrl: thumbNode.querySelector('style').text,
+          coverUrl: thumbNode.querySelector('style').text.split("'")[1],
           code: node.attributes['data-identifier'],
         };
       }),
