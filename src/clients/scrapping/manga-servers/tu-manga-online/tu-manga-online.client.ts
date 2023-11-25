@@ -120,12 +120,15 @@ export class TuMangaOnlineClient implements IScrappingClient {
 
     return {
       books: resultNodes.map((node) => {
-        const thumbNode = node.querySelector('a > div.thumbnail');
+        const aNode = node.querySelector('a');
+        const thumbNode = aNode.querySelector('div.thumbnail');
+
+        const splitANode = aNode.attributes['href'].split('/');
 
         return {
           name: thumbNode.querySelector('div.thumbnail-title > h4').text,
           coverUrl: thumbNode.querySelector('style').text.split("'")[1],
-          code: node.attributes['data-identifier'],
+          code: splitANode.splice(splitANode.length - 2).join('/'),
         };
       }),
       count: resultNodes.length,
