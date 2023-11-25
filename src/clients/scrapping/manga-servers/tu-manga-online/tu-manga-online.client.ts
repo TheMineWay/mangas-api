@@ -29,13 +29,17 @@ export class TuMangaOnlineClient implements IScrappingClient {
       )
       .reverse()
       .map((node, i) => {
+        const chapterUrl = node
+          .querySelector(
+            'li.list-group-item div.text-right > a.btn.btn-default.btn-sm',
+          )
+          .attributes['href'].split('/');
+
         return {
           name: node
             .querySelector('h4 a.btn-collapse')
             .childNodes[1].text.trim(),
-          code: node.querySelector(
-            'li.list-group-item div.text-right > a.btn.btn-default.btn-sm',
-          ).attributes['href'],
+          code: chapterUrl[chapterUrl.length - 1],
           number: i + 1,
         };
       });
@@ -56,7 +60,7 @@ export class TuMangaOnlineClient implements IScrappingClient {
           (node) =>
             node.parentNode.querySelector('p.card-text').text === 'Autor',
         )
-        .map((node) => node.text),
+        .map((node) => node.text.trim()),
       status:
         rawStatus === 'Finalizado'
           ? MangaStatus.COMPLETED
