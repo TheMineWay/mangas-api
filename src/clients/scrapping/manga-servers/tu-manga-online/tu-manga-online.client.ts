@@ -25,16 +25,17 @@ export class TuMangaOnlineClient implements IScrappingClient {
 
     const chapters = content
       .querySelectorAll(
-        'div.panel-story-chapter-list > ul.row-content-chapter > li',
+        'main.element-body div#chapters > ul.list-group li.list-group-item.upload-link',
       )
       .reverse()
       .map((node, i) => {
-        const aNode = node.querySelector('a.chapter-name');
-        const aSplitHref = aNode.attributes['href'].split('/');
-
         return {
-          name: aNode.text,
-          code: aSplitHref[aSplitHref.length - 1],
+          name: node
+            .querySelector('h4 a.btn-collapse')
+            .childNodes[1].text.trim(),
+          code: node.querySelector(
+            'li.list-group-item div.text-right > a.btn.btn-default.btn-sm',
+          ).attributes['href'],
           number: i + 1,
         };
       });
