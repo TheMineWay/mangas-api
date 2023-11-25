@@ -75,17 +75,26 @@ export class TuMangaOnlineClient implements IScrappingClient {
     } satisfies MangaInfo;
   }
   async getChapterContentByMangaCodeAndChapterCode(
-    mangaCode: string,
+    _: string, // Manga code is not required when using this manga server
     chapterCode: string,
   ): Promise<MangaChapter> {
     const content = await this.getPageContent(
-      `${this.BASE_URL}/manga-${mangaCode}/${chapterCode}`,
+      `${this.BASE_URL}/view_uploads/${chapterCode}`,
+    );
+
+    const splitChapterUrl = content
+      .querySelector('div.OUTBRAIN')
+      .attributes['data-src'].split('/');
+    const realChapterCode = splitChapterUrl[splitChapterUrl.length - 2];
+
+    const cascadeContent = await this.getPageContent(
+      `${this.BASE_URL}/viewer/${realChapterCode}/cascade`,
     );
 
     return {
-      images: content
-        .querySelectorAll('div.container-chapter-reader > img')
-        .map((node) => node.attributes['src']),
+      images: cascadeContent
+        .querySelectorAll('div#main-container > div.img-container > img')
+        .map((node) => node.attributes['data-src']),
     };
   }
   async getImageByUrl(url: string) {
