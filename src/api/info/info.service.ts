@@ -14,12 +14,12 @@ export class InfoService {
       {
         code: MangaServer.MANGANATO,
         languages: [Language.en_US],
-        homepage: 'https://manganato.com/',
+        homepage: 'https://manganato.com',
       },
       {
         code: MangaServer.TU_MANGA_ONLINE,
         languages: [Language.es_ES],
-        homepage: 'https://visortmo.com/',
+        homepage: 'https://visortmo.com',
       },
     ] satisfies {
       code: MangaServer;
