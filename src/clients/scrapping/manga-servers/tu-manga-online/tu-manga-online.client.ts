@@ -47,7 +47,15 @@ export class TuMangaOnlineClient implements IScrappingClient {
         )
         .firstChild.text.trim(),
       language: Language.es_ES,
-      authors: [],
+      authors: content
+        .querySelectorAll(
+          'div.row > div.col-12 > div.row > div.col-6.col-sm-4.col-md-3 > div.card > div.card-body > a > h5.card-title',
+        )
+        .filter(
+          (node) =>
+            node.parentNode.querySelector('p.card-text').text === 'Autor',
+        )
+        .map((node) => node.text),
       status:
         rawStatus === 'Finalizado'
           ? MangaStatus.COMPLETED
