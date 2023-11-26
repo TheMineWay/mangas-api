@@ -11,6 +11,7 @@ export const getEnv = (): EnvFile => {
     apiKeys: JSON.parse(env.API_KEYS),
     openApiDocs: getBooleanFromString(env.OPEN_API_DOCS, false),
     port: +env.PORT,
+    https: getBooleanFromString(env.HTTPS, false),
   };
 };
 
@@ -18,10 +19,12 @@ interface EnvFile {
   apiKeys: string[];
   openApiDocs: boolean;
   port: number;
+  https: boolean;
 }
 
 class RawEnvFile {
   API_KEYS: string;
   OPEN_API_DOCS?: string;
   PORT: string;
+  HTTPS?: string;
 }
