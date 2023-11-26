@@ -14,7 +14,7 @@ export class ManganatoClient implements IScrappingClient {
 
   async getMangaInfoByCode(mangaCode: string) {
     const content = await this.getPageContent(
-      `${this.BASE_URL}/manga-${mangaCode}`,
+      `${this.BASE_URL}/manga-${encodeURIComponent(mangaCode)}`,
     );
 
     const infoContainer = content.querySelector(
@@ -77,7 +77,9 @@ export class ManganatoClient implements IScrappingClient {
     chapterCode: string,
   ): Promise<MangaChapter> {
     const content = await this.getPageContent(
-      `${this.BASE_URL}/manga-${mangaCode}/${chapterCode}`,
+      `${this.BASE_URL}/manga-${encodeURIComponent(
+        mangaCode,
+      )}/${encodeURIComponent(chapterCode)}`,
     );
 
     return {
@@ -108,9 +110,8 @@ export class ManganatoClient implements IScrappingClient {
     filters: MangaExploreFiltersDTO,
   ): Promise<MangaExploreInfo> {
     const content = await this.getPageContent(
-      `https://manganato.com/search/story/${filters.name.replaceAll(
-        ' ',
-        '_',
+      `https://manganato.com/search/story/${encodeURIComponent(
+        filters.name.replaceAll(' ', '_'),
       )}?page=${filters.page ?? 1}`,
     );
 
