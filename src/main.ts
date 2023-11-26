@@ -31,7 +31,7 @@ async function bootstrap() {
   if (openApiDocs) {
     const config = new DocumentBuilder()
       .setTitle('Mangas API')
-      .setDescription('The Mangas API documentation')
+      .setDescription('The Mangas API web documentation')
       .setVersion('1.5.0')
       .addBasicAuth(
         { type: 'apiKey', name: 'api-key', in: 'header' },
