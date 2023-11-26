@@ -52,23 +52,27 @@ export class ManganatoClient implements IScrappingClient {
 
     return {
       code: mangaCode,
-      name: infoContainer.querySelector('div.story-info-right > h1').text,
+      name: infoContainer
+        .querySelector('div.story-info-right > h1')
+        .text.trim(),
       language: Language.en_US,
       authors: processedInfoTable
         .find(({ label }) => label.includes('Author'))
         ?.valueNode.querySelectorAll('a')
-        .map(({ text }) => text),
+        .map(({ text }) => text.trim()),
       status:
         rawStatus === 'Completed' ? MangaStatus.COMPLETED : MangaStatus.ONGOING,
       categories: processedInfoTable
         .find(({ label }) => label.includes('Genres'))
         .valueNode.querySelectorAll('a')
-        .map(({ text }) => text),
+        .map(({ text }) => text.trim()),
       coverUrl: infoContainer.querySelector('span.info-image > img.img-loading')
         .attributes['src'],
-      synopsis: infoContainer.querySelector(
-        'div.panel-story-info-description#panel-story-info-description',
-      ).text,
+      synopsis: infoContainer
+        .querySelector(
+          'div.panel-story-info-description#panel-story-info-description',
+        )
+        .text.trim(),
       chapters,
     } satisfies MangaInfo;
   }
@@ -101,7 +105,6 @@ export class ManganatoClient implements IScrappingClient {
       });
       return new StreamableFile(image.data);
     } catch (e) {
-      console.log(e);
       throw e;
     }
   }
@@ -131,7 +134,7 @@ export class ManganatoClient implements IScrappingClient {
         const mangaPageLink = aLink.attributes['href'].split('/');
 
         return {
-          name: rNode.querySelector('h3 > a').text,
+          name: rNode.querySelector('h3 > a').text.trim(),
           coverUrl: aLink.querySelector('img').attributes['src'],
           code: mangaPageLink[mangaPageLink.length - 1].substring(6),
         };

@@ -136,7 +136,7 @@ export class TuMangaOnlineClient implements IScrappingClient {
         const splitANode = aNode.attributes['href'].split('/');
 
         return {
-          name: thumbNode.querySelector('div.thumbnail-title > h4').text,
+          name: thumbNode.querySelector('div.thumbnail-title > h4').text.trim(),
           coverUrl: thumbNode.querySelector('style').text.split("'")[1],
           code: splitANode.splice(splitANode.length - 2).join('/'),
         };
