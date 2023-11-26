@@ -14,7 +14,7 @@ export class ManganeloClient implements IScrappingClient {
 
   async getMangaInfoByCode(mangaCode: string) {
     const content = await this.getPageContent(
-      `${this.BASE_URL}/manga-${mangaCode}`,
+      `${this.BASE_URL}/manga-${encodeURIComponent(mangaCode)}`,
     );
 
     const infoContainer = content.querySelector(
@@ -42,7 +42,7 @@ export class ManganeloClient implements IScrappingClient {
         const aNode = node.querySelector('a.chapter-name');
         const aSplitHref = aNode.attributes['href'].split('/');
         return {
-          name: aNode.text,
+          name: aNode.text.trim(),
           code: aSplitHref[aSplitHref.length - 1],
           number: +node.attributes['id'].split('-')[1],
         };
@@ -50,23 +50,27 @@ export class ManganeloClient implements IScrappingClient {
 
     return {
       code: mangaCode,
-      name: infoContainer.querySelector('div.story-info-right > h1').text,
+      name: infoContainer
+        .querySelector('div.story-info-right > h1')
+        .text.trim(),
       language: Language.en_US,
       authors: processedInfoTable
         .find(({ label }) => label.includes('Author'))
         ?.valueNode.querySelectorAll('a')
-        .map(({ text }) => text),
+        .map(({ text }) => text.trim()),
       status:
         rawStatus === 'Completed' ? MangaStatus.COMPLETED : MangaStatus.ONGOING,
       categories: processedInfoTable
         .find(({ label }) => label.includes('Genres'))
         .valueNode.querySelectorAll('a')
-        .map(({ text }) => text),
+        .map(({ text }) => text.trim()),
       coverUrl: infoContainer.querySelector('span.info-image > img.img-loading')
         .attributes['src'],
-      synopsis: infoContainer.querySelector(
-        'div.panel-story-info-description#panel-story-info-description',
-      ).text,
+      synopsis: infoContainer
+        .querySelector(
+          'div.panel-story-info-description#panel-story-info-description',
+        )
+        .text.trim(),
       chapters,
     } satisfies MangaInfo;
   }
@@ -75,7 +79,9 @@ export class ManganeloClient implements IScrappingClient {
     chapterCode: string,
   ): Promise<MangaChapter> {
     const content = await this.getPageContent(
-      `${this.BASE_URL}/manga-${mangaCode}/${chapterCode}`,
+      `${this.BASE_URL}/manga-${encodeURIComponent(
+        mangaCode,
+      )}/${encodeURIComponent(chapterCode)}`,
     );
 
     return {
@@ -106,9 +112,8 @@ export class ManganeloClient implements IScrappingClient {
     filters: MangaExploreFiltersDTO,
   ): Promise<MangaExploreInfo> {
     const content = await this.getPageContent(
-      `https://m.manganelo.com/search/story/${filters.name.replaceAll(
-        ' ',
-        '_',
+      `https://m.manganelo.com/search/story/${encodeURIComponent(
+        filters.name.replaceAll(' ', '_'),
       )}?page=${filters.page ?? 1}`,
     );
 
@@ -128,7 +133,7 @@ export class ManganeloClient implements IScrappingClient {
         const mangaPageLink = aLink.attributes['href'].split('/');
 
         return {
-          name: rNode.querySelector('h3 > a').text,
+          name: rNode.querySelector('h3 > a').text.trim(),
           coverUrl: aLink.querySelector('img').attributes['src'],
           code: mangaPageLink[mangaPageLink.length - 1].substring(6),
         };

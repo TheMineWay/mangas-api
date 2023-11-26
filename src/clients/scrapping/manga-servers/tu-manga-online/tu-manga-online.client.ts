@@ -79,7 +79,7 @@ export class TuMangaOnlineClient implements IScrappingClient {
     chapterCode: string,
   ): Promise<MangaChapter> {
     const content = await this.getPageContent(
-      `${this.BASE_URL}/view_uploads/${chapterCode}`,
+      `${this.BASE_URL}/view_uploads/${encodeURIComponent(chapterCode)}`,
     );
 
     const splitChapterUrl = content
@@ -88,7 +88,7 @@ export class TuMangaOnlineClient implements IScrappingClient {
     const realChapterCode = splitChapterUrl[splitChapterUrl.length - 2];
 
     const cascadeContent = await this.getPageContent(
-      `${this.BASE_URL}/viewer/${realChapterCode}/cascade`,
+      `${this.BASE_URL}/viewer/${encodeURIComponent(realChapterCode)}/cascade`,
     );
 
     return {
@@ -119,9 +119,8 @@ export class TuMangaOnlineClient implements IScrappingClient {
     filters: MangaExploreFiltersDTO,
   ): Promise<MangaExploreInfo> {
     const content = await this.getPageContent(
-      `${this.BASE_URL}/library?_pg=1&title=${filters.name.replaceAll(
-        ' ',
-        '+',
+      `${this.BASE_URL}/library?_pg=1&title=${encodeURIComponent(
+        filters.name,
       )}`,
     );
 
@@ -137,7 +136,7 @@ export class TuMangaOnlineClient implements IScrappingClient {
         const splitANode = aNode.attributes['href'].split('/');
 
         return {
-          name: thumbNode.querySelector('div.thumbnail-title > h4').text,
+          name: thumbNode.querySelector('div.thumbnail-title > h4').text.trim(),
           coverUrl: thumbNode.querySelector('style').text.split("'")[1],
           code: splitANode.splice(splitANode.length - 2).join('/'),
         };
