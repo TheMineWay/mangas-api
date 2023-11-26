@@ -12,5 +12,6 @@ services:
       - '${PORT}:${PORT}'
     volumes:
       - ./src:/app/src
+      - ./certificates:/app/certificates
     expose:
       - '${PORT}'
