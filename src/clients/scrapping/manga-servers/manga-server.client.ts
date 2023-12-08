@@ -32,7 +32,4 @@ export class MangaServerClient {
       chapterCode,
     );
   }
-  async getChapterImageByUrl(url: string) {
-    return await this.scrappingClient.getImageByUrl(url);
-  }
 }
