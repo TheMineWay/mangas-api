@@ -1,7 +1,8 @@
 {
   "name": "mangas-api",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "An Open Source API used to read manga content easily from different manga pages. ",
+  "repository": "https://github.com/TheMineWay/mangas-api",
   "author": "TheMineWay",
   "private": true,
   "license": "MIT",
