@@ -4,7 +4,7 @@ import axios from 'axios';
 import HTMLParser from 'node-html-parser';
 import { MangaStatus } from '../../../../types/manga/info/manga-status.enum';
 import { MangaInfo } from '../../../../types/manga/info/manga-info.type';
-import { StreamableFile } from '@nestjs/common';
+import { NotFoundException, StreamableFile } from '@nestjs/common';
 import { MangaExploreInfo } from '../../../../types/manga/explore/manga-explore-info.type';
 import { MangaExploreFiltersDTO } from '../../../../dtos/manga/explore/manga-explore-filters.dto';
 import { Language } from '../../../../types/languages/language.enum';
@@ -13,66 +13,76 @@ export class ManganeloClient implements IScrappingClient {
   private readonly BASE_URL = 'https://chapmanganelo.com';
 
   async getMangaInfoByCode(mangaCode: string) {
-    const content = await this.getPageContent(
-      `${this.BASE_URL}/manga-${encodeURIComponent(mangaCode)}`,
-    );
+    const urls = ['https://chapmanganelo.com', 'https://m.manganelo.com'];
+    for (const url of urls) {
+      const content = await this.getPageContent(
+        `${url}/manga-${encodeURIComponent(mangaCode)}`,
+      );
 
-    const infoContainer = content.querySelector(
-      'div.container.container-main > div.container-main-left > div.panel-story-info',
-    );
+      if (content.querySelector('div.panel-not-found > p')) continue;
 
-    const infoTable = infoContainer.querySelectorAll(
-      'table.variations-tableInfo > tbody > tr',
-    );
+      const infoContainer = content.querySelector(
+        'div.container.container-main > div.container-main-left > div.panel-story-info',
+      );
 
-    const processedInfoTable = infoTable.map((row) => ({
-      label: row.querySelector('td.table-label').childNodes[1].text,
-      valueNode: row.querySelector('td.table-value'),
-    }));
+      const infoTable = infoContainer.querySelectorAll(
+        'table.variations-tableInfo > tbody > tr',
+      );
 
-    const rawStatus = processedInfoTable.find(({ label }) =>
-      label.includes('Status'),
-    ).valueNode.text;
+      const processedInfoTable = infoTable.map((row) => ({
+        label: row.querySelector('td.table-label').childNodes[1].text,
+        valueNode: row.querySelector('td.table-value'),
+      }));
 
-    const chapters = content
-      .querySelectorAll(
-        'div.panel-story-chapter-list > ul#row-content-chapter > li',
-      )
-      .map((node) => {
-        const aNode = node.querySelector('a.chapter-name');
-        const aSplitHref = aNode.attributes['href'].split('/');
-        return {
-          name: aNode.text.trim(),
-          code: aSplitHref[aSplitHref.length - 1],
-          number: +node.attributes['id'].split('-')[1],
-        };
-      });
+      const rawStatus = processedInfoTable.find(({ label }) =>
+        label.includes('Status'),
+      ).valueNode.text;
 
-    return {
-      code: mangaCode,
-      name: infoContainer
-        .querySelector('div.story-info-right > h1')
-        .text.trim(),
-      language: Language.en_US,
-      authors: processedInfoTable
-        .find(({ label }) => label.includes('Author'))
-        ?.valueNode.querySelectorAll('a')
-        .map(({ text }) => text.trim()),
-      status:
-        rawStatus === 'Completed' ? MangaStatus.COMPLETED : MangaStatus.ONGOING,
-      categories: processedInfoTable
-        .find(({ label }) => label.includes('Genres'))
-        .valueNode.querySelectorAll('a')
-        .map(({ text }) => text.trim()),
-      coverUrl: infoContainer.querySelector('span.info-image > img.img-loading')
-        .attributes['src'],
-      synopsis: infoContainer
-        .querySelector(
-          'div.panel-story-info-description#panel-story-info-description',
+      const chapters = content
+        .querySelectorAll(
+          'div.panel-story-chapter-list > ul#row-content-chapter > li',
         )
-        .text.trim(),
-      chapters,
-    } satisfies MangaInfo;
+        .map((node) => {
+          const aNode = node.querySelector('a.chapter-name');
+          const aSplitHref = aNode.attributes['href'].split('/');
+          return {
+            name: aNode.text.trim(),
+            code: aSplitHref[aSplitHref.length - 1],
+            number: +node.attributes['id'].split('-')[1],
+          };
+        });
+
+      return {
+        code: mangaCode,
+        name: infoContainer
+          .querySelector('div.story-info-right > h1')
+          .text.trim(),
+        language: Language.en_US,
+        authors: processedInfoTable
+          .find(({ label }) => label.includes('Author'))
+          ?.valueNode.querySelectorAll('a')
+          .map(({ text }) => text.trim()),
+        status:
+          rawStatus === 'Completed'
+            ? MangaStatus.COMPLETED
+            : MangaStatus.ONGOING,
+        categories: processedInfoTable
+          .find(({ label }) => label.includes('Genres'))
+          .valueNode.querySelectorAll('a')
+          .map(({ text }) => text.trim()),
+        coverUrl: infoContainer.querySelector(
+          'span.info-image > img.img-loading',
+        ).attributes['src'],
+        synopsis: infoContainer
+          .querySelector(
+            'div.panel-story-info-description#panel-story-info-description',
+          )
+          .text.trim(),
+        chapters,
+      } satisfies MangaInfo;
+    }
+
+    throw new NotFoundException();
   }
   async getChapterContentByMangaCodeAndChapterCode(
     mangaCode: string,
