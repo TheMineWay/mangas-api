@@ -8,6 +8,7 @@ import { StreamableFile } from '@nestjs/common';
 import { MangaExploreInfo } from '../../../../types/manga/explore/manga-explore-info.type';
 import { MangaExploreFiltersDTO } from '../../../../dtos/manga/explore/manga-explore-filters.dto';
 import { Language } from '../../../../types/languages/language.enum';
+import { Agent } from 'https';
 
 export class TuMangaOnlineClient implements IScrappingClient {
   private readonly BASE_URL = 'https://visortmo.com';
@@ -102,11 +103,12 @@ export class TuMangaOnlineClient implements IScrappingClient {
       const image = await axios.get(url, {
         responseType: 'stream',
         headers: {
-          Accept: 'image/avif,image/webp,*/*',
-          'Accept-Encoding': 'gzip, deflate, br',
-          DNT: 1,
-          Referer: 'https://chapmanganato.com/',
+          Referer: 'https://visortmo.com/',
         },
+        maxBodyLength: Infinity,
+        httpsAgent: new Agent({
+          rejectUnauthorized: false,
+        }),
       });
       return new StreamableFile(image.data);
     } catch (e) {
