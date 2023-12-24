@@ -8,6 +8,7 @@ import { StreamableFile } from '@nestjs/common';
 import { MangaExploreInfo } from '../../../../types/manga/explore/manga-explore-info.type';
 import { MangaExploreFiltersDTO } from '../../../../dtos/manga/explore/manga-explore-filters.dto';
 import { Language } from '../../../../types/languages/language.enum';
+import { Agent } from 'https';
 
 export class TuMangaOnlineClient implements IScrappingClient {
   private readonly BASE_URL = 'https://visortmo.com';
@@ -82,13 +83,29 @@ export class TuMangaOnlineClient implements IScrappingClient {
       `${this.BASE_URL}/view_uploads/${encodeURIComponent(chapterCode)}`,
     );
 
-    const splitChapterUrl = content
-      .querySelector('div.OUTBRAIN')
-      .attributes['data-src'].split('/');
-    const realChapterCode = splitChapterUrl[splitChapterUrl.length - 2];
+    const getId = () => {
+      // TuMangaOnline has two known behaviours
+      if (
+        content.getElementsByTagName('title')[0].text.trim() === 'TuMangaOnline'
+      ) {
+        // We need to get the id from the script
+        const line = content
+          .getElementsByTagName('script')[0]
+          .innerText.trim()
+          .split('\n')
+          .find((l) => l.includes('{uniqid:'));
+        return line.split("'")[1];
+      } else {
+        return content
+          .querySelector('meta[property=og:url]')
+          .attributes['content'].split('/')[4];
+      }
+    };
+
+    const mangaUuid = getId();
 
     const cascadeContent = await this.getPageContent(
-      `${this.BASE_URL}/viewer/${encodeURIComponent(realChapterCode)}/cascade`,
+      `${this.BASE_URL}/viewer/${encodeURIComponent(mangaUuid)}/cascade`,
     );
 
     return {
@@ -102,11 +119,12 @@ export class TuMangaOnlineClient implements IScrappingClient {
       const image = await axios.get(url, {
         responseType: 'stream',
         headers: {
-          Accept: 'image/avif,image/webp,*/*',
-          'Accept-Encoding': 'gzip, deflate, br',
-          DNT: 1,
-          Referer: 'https://chapmanganato.com/',
+          Referer: 'https://visortmo.com/',
         },
+        maxBodyLength: Infinity,
+        httpsAgent: new Agent({
+          rejectUnauthorized: false,
+        }),
       });
       return new StreamableFile(image.data);
     } catch (e) {
