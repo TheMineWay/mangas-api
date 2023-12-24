@@ -83,13 +83,29 @@ export class TuMangaOnlineClient implements IScrappingClient {
       `${this.BASE_URL}/view_uploads/${encodeURIComponent(chapterCode)}`,
     );
 
-    const splitChapterUrl = content
-      .querySelector('div.OUTBRAIN')
-      .attributes['data-src'].split('/');
-    const realChapterCode = splitChapterUrl[splitChapterUrl.length - 2];
+    const getId = () => {
+      // TuMangaOnline has two known behaviours
+      if (
+        content.getElementsByTagName('title')[0].text.trim() === 'TuMangaOnline'
+      ) {
+        // We need to get the id from the script
+        const line = content
+          .getElementsByTagName('script')[0]
+          .innerText.trim()
+          .split('\n')
+          .find((l) => l.includes('{uniqid:'));
+        return line.split("'")[1];
+      } else {
+        return content
+          .querySelector('meta[property=og:url]')
+          .attributes['content'].split('/')[4];
+      }
+    };
+
+    const mangaUuid = getId();
 
     const cascadeContent = await this.getPageContent(
-      `${this.BASE_URL}/viewer/${encodeURIComponent(realChapterCode)}/cascade`,
+      `${this.BASE_URL}/viewer/${encodeURIComponent(mangaUuid)}/cascade`,
     );
 
     return {
