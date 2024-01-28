@@ -8,6 +8,7 @@ import { APP_GUARD } from '@nestjs/core';
 @Module({
   imports: [
     ApiKeysModule.registerAsync(async () => {
+      require('dotenv').config();
       const { apiKeys: keys } = getEnv();
       return {
         apiKeys: [
