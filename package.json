@@ -30,7 +30,7 @@
     "class-validator": "^0.14.1",
     "dotenv": "^16.4.5",
     "helmet": "^7.1.0",
-    "nestjs-api-keys": "^1.1.0",
+    "nestjs-api-keys": "^1.1.1",
     "node-html-parser": "^6.1.13",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
